@@ -12,49 +12,53 @@
     THIS SOFTWARE IS PROVIDED BY Nicolas Normand "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef CPP_TOOLS_H_
+#define CPP_TOOLS_H_
 
-namespace cppt
+#include <string>
+#include <sstream>
+
+namespace cppmt
 {
+
+using std::string;
+
+
+template <typename T, typename STRINGTYPE>
+static T fromString(const STRINGTYPE& v, bool* success = NULL)
+{
+	T cv;
+	std::stringstream ss;
+	ss << v;
+	ss >> cv;
+	if (success) {
+		*success = (ss && ss.eof());
+	}
+	return cv;
+}
+
+template <typename T, typename STRINGTYPE>
+static bool fromString(T& val, const STRINGTYPE& v)
+{
+	bool r;
+	val = fromString<T>(v, &r);
+	return r;
+}
 
 template <typename T>
-string Opts::convert(void* recv_opt, char* opt_arg)
+static string toString(T v)
 {
-	if (opt_arg)
-	{
-		T* o = reinterpret_cast<T*>(recv_opt);
-		std::stringstream ss(opt_arg);
-		ss >> *o;
-
-		if (!ss)
-			return "Invalid type convertion";
-	}
-	return "";
+	std::stringstream ss;
+	ss << v;
+	return ss.str();
 }
 
-template <>
-string Opts::convert<string>(void* recv_opt, char* opt_arg)
-{
-	if (opt_arg)
-	{
-		string* s = reinterpret_cast<string*>(recv_opt);
-		*s = opt_arg;
-	}
-	return "";
-}
-
-
-template <typename T>
-int Opts::add(const string& long_opt, char short_opt, const string& helpstring, int has_arg, T* recv_opt, convert_t conv)
-{
-	if (find_same_opt(long_opt, short_opt))
-		return -1;
-	
-	if (has_arg != required_argument && has_arg != optional_argument)
-		return -2;
-
-	all_opts__.push_back( opt_t(long_opt, short_opt, helpstring, has_arg, reinterpret_cast<void*>(recv_opt), conv) );
-	return 0;
-}
+bool endsWith(const string& haystack, const string& needle);
+string trim(const string& str);
+string ltrim(const string& str);
+string rtrim(const string& str);
 
 }
+
+#endif
 

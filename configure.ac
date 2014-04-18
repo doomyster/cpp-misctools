@@ -18,11 +18,11 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 
-AC_CONFIG_FILES([c++-misctools-config
-c++-misctools.pc
+AC_CONFIG_FILES([cpp-misctools-config
+cpp-misctools.pc
 Makefile
 src/Makefile
-src/c++-misctools.h
+src/cppmt-misctools.h
 tests/Makefile])
 AC_OUTPUT
 

@@ -3,11 +3,11 @@ exec_prefix=@prefix@
 libdir=@prefix@/lib
 includedir=@prefix@/lib
 
-Name: c++-misctools
+Name: cpp-misctools
 Description: C++ Miscellaneous tools library.
 Version: @VERSION@
 Requires: libpcre
-Libs: -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lc++-misctools @PCRECPP_LIBS@
+Libs: -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lcpp-misctools @PCRECPP_LIBS@
 Libs.private: -lpcrecpp
-Cflags: -I@prefix@/include/c++-misctools @PCRECPP_CFLAGS@
+Cflags: -I@prefix@/include/cpp-misctools @PCRECPP_CFLAGS@
 

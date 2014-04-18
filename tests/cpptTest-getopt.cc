@@ -35,7 +35,7 @@ class arg_t
 	protected:
 	void init__(const char* arg0, va_list va)
 	{
-		std::vector<cppt::string> args;
+		std::vector<cppmt::string> args;
 		args.push_back(arg0);
 
 		const char* a = va_arg(va, const char*);
@@ -72,7 +72,7 @@ class arg_t
 std::ostream& operator<< (std::ostream& os, const arg_t& a)
 {
 	if (a.argv) {
-		cppt::string comma = "";
+		cppmt::string comma = "";
 
 		char** i = a.argv;
 		while (*i) {
@@ -147,7 +147,7 @@ std::pair<T, S> MP(T t, S s)
 }
 
 template <typename T, typename S>
-void make_test(const std::string& testName, unsigned int i, cppt::Opts& o, T& flag_opt1, S& flag_opt2, arg_t& a, opt_test_t<T, S>& t)
+void make_test(const std::string& testName, unsigned int i, cppmt::Opts& o, T& flag_opt1, S& flag_opt2, arg_t& a, opt_test_t<T, S>& t)
 {
 	int ret = o.get(a.argc, a.argv);
 	bool has_errors = o.got_errors();
@@ -195,7 +195,7 @@ void cpptTestGetOpt::testOptFlags()
 		bool flag_opt1 = false;
 		bool flag_opt2 = false;
 
-		cppt::Opts o(devnull, devnull);
+		cppmt::Opts o(devnull, devnull);
 		o.add("long",  's', "Help string",   &flag_opt1);
 		o.add("long2", 'S', "Help string 2", &flag_opt2);
 
@@ -206,7 +206,7 @@ void cpptTestGetOpt::testOptFlags()
 void cpptTestGetOpt::testOptArgs()
 {
 	// Save horizontal space
-	using cppt::string;
+	using cppmt::string;
 	typedef opt_test_t<string, int> opt_test_si_t;
 
 	std::ofstream devnull("/dev/null");
@@ -227,10 +227,10 @@ void cpptTestGetOpt::testOptArgs()
 	test.push_back( MP(arg_t("a.out", "", "--long", "SKY", "--long2=-5", "", NULL), opt_test_si_t("SKY",        -5, 4, false,     "", ""   )) );
 
 	for (unsigned int i=0; i<test.size(); ++i) {
-		cppt::string flag_opt1 = "<default>";
+		cppmt::string flag_opt1 = "<default>";
 		int          flag_opt2 = 33;
 
-		cppt::Opts o(devnull, devnull);
+		cppmt::Opts o(devnull, devnull);
 		o.add("long",  's', "Help string",   required_argument, &flag_opt1);
 		o.add("long2", 'S', "Help string 2", required_argument, &flag_opt2);
 
@@ -240,7 +240,7 @@ void cpptTestGetOpt::testOptArgs()
 
 void cpptTestGetOpt::testSameOpt()
 {
-	cppt::Opts o;
+	cppmt::Opts o;
 
 	CPPUNIT_ASSERT(o.add("blob", 'b', "", NULL) == 0);
 	CPPUNIT_ASSERT(o.add("blob", 'n', "", NULL) != 0);
@@ -263,7 +263,7 @@ void cpptTestGetOpt::testOnlyLong()
 		bool flag_opt1 = false;
 		int  flag_opt2 = 34;
 
-		cppt::Opts o(devnull, devnull);
+		cppmt::Opts o(devnull, devnull);
 		o.add("long",   0 , "Help string",   &flag_opt1);
 		o.add("long2",  0 , "Help string 2", required_argument, &flag_opt2);
 
@@ -284,7 +284,7 @@ void cpptTestGetOpt::testOnlyShort()
 		bool flag_opt1 = false;
 		int  flag_opt2 = 34;
 
-		cppt::Opts o(devnull, devnull);
+		cppmt::Opts o(devnull, devnull);
 		o.add("", 'l', "Help string",   &flag_opt1);
 		o.add("", 'L', "Help string 2", required_argument, &flag_opt2);
 
@@ -299,7 +299,7 @@ void cpptTestGetOpt::testConfigFile()
 	std::string c[7];
 	std::string d[4];
 
-	cppt::Opts o;
+	cppmt::Opts o;
 	o.add("optA1",  0 , "", required_argument, &a[0]);
 	o.add("optA2",  0 , "", required_argument, &a[1]);
 	o.add("optA3",  0 , "", required_argument, &a[2]);

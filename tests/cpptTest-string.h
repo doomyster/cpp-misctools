@@ -15,7 +15,7 @@
 #ifndef CPPT_TESTS_STRING_H_
 #define CPPT_TESTS_STRING_H_
 
-#include "c++-string.h"
+#include "cppmt-string.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class cpptTestString: public CppUnit::TestFixture

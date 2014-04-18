@@ -21,9 +21,9 @@
 #include <sstream>
 #include <vector>
 
-#include "c++-string.h"
+#include "cppmt-string.h"
 
-namespace cppt
+namespace cppmt
 {
 
 class Opts
@@ -84,9 +84,9 @@ class Opts
 	void show_help();
 };
 
-} // End of namespace cppt
+} // End of namespace cppmt
 
-#include "c++-getopt.hxx"
+#include "cppmt-getopt.hxx"
 
 #endif
 

@@ -15,7 +15,7 @@
 #ifndef CPPT_TESTS_STRING_H_
 #define CPPT_TESTS_STRING_H_
 
-#include "c++-getopt.h"
+#include "cppmt-getopt.h"
 #include <cppunit/extensions/HelperMacros.h>
 
 class cpptTestGetOpt: public CppUnit::TestFixture

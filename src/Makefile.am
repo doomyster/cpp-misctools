@@ -1,11 +1,11 @@
-lib_LTLIBRARIES = libc++-misctools.la
+lib_LTLIBRARIES = libcpp-misctools.la
 
-libc___misctools_la_SOURCES = c++-getopt.cc \
-			      c++-string.cc
+libcpp_misctools_la_SOURCES = cppmt-getopt.cc \
+			      cppmt-string.cc
 
-libc___misctools_la_includedir = $(includedir)/c++-misctools
-libc___misctools_la_include_HEADERS = c++-exceptions.h c++-getopt.h c++-getopt.hxx c++-string.h c++-misctools.h
+libcpp_misctools_la_includedir = $(includedir)/cpp-misctools
+libcpp_misctools_la_include_HEADERS = cppmt-exceptions.h cppmt-getopt.h cppmt-getopt.hxx cppmt-string.h cppmt-misctools.h
 
-libc___misctools_la_CXXFLAGS = @PCRECPP_CFLAGS@
-libc___misctools_la_LIBADD   = @PCRECPP_LIBS@
+libcpp_misctools_la_CXXFLAGS = @PCRECPP_CFLAGS@
+libcpp_misctools_la_LIBADD   = @PCRECPP_LIBS@
 

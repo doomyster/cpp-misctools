@@ -19,9 +19,9 @@
 
 #include <pcrecpp.h>
 
-#include "c++-getopt.h"
+#include "cppmt-getopt.h"
 
-namespace cppt
+namespace cppmt
 {
 
 string Opts::convert_flag(void* recv_opt, char* opt_arg)
@@ -259,9 +259,9 @@ void Opts::handle_line(const std::string& line)
 		return;
 	}
 
-	opt_name  = cppt::trim(opt_name);
+	opt_name  = trim(opt_name);
 	if (!quoted) {
-		opt_value = cppt::trim(opt_value);
+		opt_value = trim(opt_value);
 	}
 
 	std::vector<opt_t>::iterator it;
@@ -386,5 +386,5 @@ bool Opts::got_errors() const
 	return got_errors__;
 }
 
-} // End of: namespace cppt
+} // End of: namespace cppmt
 

@@ -12,40 +12,49 @@
     THIS SOFTWARE IS PROVIDED BY Nicolas Normand "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "c++-string.h"
-#include <algorithm>
 
-namespace cppt
+namespace cppmt
 {
 
-bool endsWith(const string& haystack, const string& needle)
+template <typename T>
+string Opts::convert(void* recv_opt, char* opt_arg)
 {
-	if (haystack.length() >= needle.length()) {
-		return haystack.compare(haystack.size() - needle.size(), needle.size(), needle) == 0;
+	if (opt_arg)
+	{
+		T* o = reinterpret_cast<T*>(recv_opt);
+		std::stringstream ss(opt_arg);
+		ss >> *o;
+
+		if (!ss)
+			return "Invalid type convertion";
 	}
-	return false;
+	return "";
 }
 
-string trim(const string& str)
+template <>
+string Opts::convert<string>(void* recv_opt, char* opt_arg)
 {
-	return ltrim(rtrim(str));
+	if (opt_arg)
+	{
+		string* s = reinterpret_cast<string*>(recv_opt);
+		*s = opt_arg;
+	}
+	return "";
 }
 
-// http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
-// &Limitation: might not work on international strings
-string ltrim(const string& str)
+
+template <typename T>
+int Opts::add(const string& long_opt, char short_opt, const string& helpstring, int has_arg, T* recv_opt, convert_t conv)
 {
-	string s = str;
-	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-	return s;
+	if (find_same_opt(long_opt, short_opt))
+		return -1;
+	
+	if (has_arg != required_argument && has_arg != optional_argument)
+		return -2;
+
+	all_opts__.push_back( opt_t(long_opt, short_opt, helpstring, has_arg, reinterpret_cast<void*>(recv_opt), conv) );
+	return 0;
 }
 
-string rtrim(const string& str)
-{
-	string s = str;
-	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-	return s;
 }
-
-} // End of: namespace cppt
 

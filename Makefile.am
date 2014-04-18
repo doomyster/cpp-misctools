@@ -1,7 +1,7 @@
 SUBDIRS = src tests
 
-bin_SCRIPTS = c++-misctools-config
+bin_SCRIPTS = cpp-misctools-config
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = c++-misctools.pc
+pkgconfig_DATA = cpp-misctools.pc
 

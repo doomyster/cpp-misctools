@@ -12,53 +12,40 @@
     THIS SOFTWARE IS PROVIDED BY Nicolas Normand "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef CPP_TOOLS_H_
-#define CPP_TOOLS_H_
+#include "cppmt-string.h"
+#include <algorithm>
 
-#include <string>
-#include <sstream>
-
-namespace cppt
+namespace cppmt
 {
 
-using std::string;
-
-
-template <typename T, typename STRINGTYPE>
-static T fromString(const STRINGTYPE& v, bool* success = NULL)
+bool endsWith(const string& haystack, const string& needle)
 {
-	T cv;
-	std::stringstream ss;
-	ss << v;
-	ss >> cv;
-	if (success) {
-		*success = (ss && ss.eof());
+	if (haystack.length() >= needle.length()) {
+		return haystack.compare(haystack.size() - needle.size(), needle.size(), needle) == 0;
 	}
-	return cv;
+	return false;
 }
 
-template <typename T, typename STRINGTYPE>
-static bool fromString(T& val, const STRINGTYPE& v)
+string trim(const string& str)
 {
-	bool r;
-	val = fromString<T>(v, &r);
-	return r;
+	return ltrim(rtrim(str));
 }
 
-template <typename T>
-static string toString(T v)
+// http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// &Limitation: might not work on international strings
+string ltrim(const string& str)
 {
-	std::stringstream ss;
-	ss << v;
-	return ss.str();
+	string s = str;
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+	return s;
 }
 
-bool endsWith(const string& haystack, const string& needle);
-string trim(const string& str);
-string ltrim(const string& str);
-string rtrim(const string& str);
-
+string rtrim(const string& str)
+{
+	string s = str;
+	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	return s;
 }
 
-#endif
+} // End of: namespace cppmt
 
