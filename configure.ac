@@ -1,4 +1,4 @@
-AC_INIT([cpp-multitools], [0.1], [nnormand@justcodeit.org], [c++-tools], [https://github.com/doomyster/cpp-misctools])
+AC_INIT([cpp-misctools], m4_esyscmd([tr -d '\n' < VERSION]), [nnormand@justcodeit.org], [c++-misctools], [https://github.com/doomyster/cpp-misctools])
 
 AC_CONFIG_MACRO_DIR([m4])
 LT_INIT
@@ -10,8 +10,19 @@ AC_PROG_CXX
 AM_PATH_CPPUNIT
 PKG_CHECK_MODULES([PCRECPP], [libpcrecpp])
 
-AC_CONFIG_FILES([Makefile
+VERSION_MAJOR=m4_esyscmd([sed -e 's/\..*//g' VERSION])
+VERSION_MINOR=m4_esyscmd([sed -e 's/[^.]*\.//1' -e 's/\..*//g' VERSION])
+VERSION_REVISION=m4_esyscmd([sed -e 's/.*\.//g' VERSION])
+
+AC_SUBST(VERSION_MAJOR)
+AC_SUBST(VERSION_MINOR)
+AC_SUBST(VERSION_REVISION)
+
+AC_CONFIG_FILES([c++-misctools-config
+c++-misctools.pc
+Makefile
 src/Makefile
+src/c++-misctools.h
 tests/Makefile])
 AC_OUTPUT
 
