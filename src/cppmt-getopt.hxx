@@ -31,18 +31,6 @@ string Opts::convert(void* recv_opt, char* opt_arg)
 	return "";
 }
 
-template <>
-string Opts::convert<string>(void* recv_opt, char* opt_arg)
-{
-	if (opt_arg)
-	{
-		string* s = reinterpret_cast<string*>(recv_opt);
-		*s = opt_arg;
-	}
-	return "";
-}
-
-
 template <typename T>
 int Opts::add(const string& long_opt, char short_opt, const string& helpstring, int has_arg, T* recv_opt, convert_t conv)
 {

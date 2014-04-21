@@ -24,6 +24,17 @@
 namespace cppmt
 {
 
+template <>
+string Opts::convert<string>(void* recv_opt, char* opt_arg)
+{
+	if (opt_arg)
+	{
+		string* s = reinterpret_cast<string*>(recv_opt);
+		*s = opt_arg;
+	}
+	return "";
+}
+
 string Opts::convert_flag(void* recv_opt, char* opt_arg)
 {
         bool* o = reinterpret_cast<bool*>(recv_opt);

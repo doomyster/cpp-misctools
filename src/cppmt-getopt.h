@@ -84,6 +84,9 @@ class Opts
 	void show_help();
 };
 
+template <>
+string Opts::convert<string>(void* recv_opt, char* opt_arg);
+
 } // End of namespace cppmt
 
 #include "cppmt-getopt.hxx"

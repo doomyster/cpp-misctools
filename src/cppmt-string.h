@@ -17,6 +17,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 namespace cppmt
 {
@@ -25,7 +26,7 @@ using std::string;
 
 
 template <typename T, typename STRINGTYPE>
-static T fromString(const STRINGTYPE& v, bool* success = NULL)
+T fromString(const STRINGTYPE& v, bool* success = NULL)
 {
 	T cv;
 	std::stringstream ss;
@@ -38,7 +39,7 @@ static T fromString(const STRINGTYPE& v, bool* success = NULL)
 }
 
 template <typename T, typename STRINGTYPE>
-static bool fromString(T& val, const STRINGTYPE& v)
+bool fromString(T& val, const STRINGTYPE& v)
 {
 	bool r;
 	val = fromString<T>(v, &r);
@@ -46,7 +47,7 @@ static bool fromString(T& val, const STRINGTYPE& v)
 }
 
 template <typename T>
-static string toString(T v)
+string toString(T v)
 {
 	std::stringstream ss;
 	ss << v;
@@ -54,9 +55,19 @@ static string toString(T v)
 }
 
 bool endsWith(const string& haystack, const string& needle);
+
+// alter *str
+// str must not be NULL
+void  trim(string* str);
+void ltrim(string* str);
+void rtrim(string* str);
+
 string trim(const string& str);
 string ltrim(const string& str);
 string rtrim(const string& str);
+
+std::vector<string> split(                             const string& str, char delim);
+void                split(std::vector<string>& tokens, const string& str, char delim);
 
 }
 
