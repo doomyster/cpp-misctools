@@ -85,6 +85,9 @@ static std::vector<table_int_t>& getTestTable_int()
 		t.push_back(table_int_t("a15",  0, false, true ));
 		t.push_back(table_int_t("-5",  -5, true,  false));
 		t.push_back(table_int_t("0xff", 0, false, false));
+		t.push_back(table_int_t("5.25", 0, false, true ));
+		t.push_back(table_int_t("",     0, false, true ));
+		t.push_back(table_int_t(" ",    0, false, true ));
 		first = false;
 	}
 
@@ -169,16 +172,97 @@ void cpptTestString::testEndsWith()
 
 void cpptTestString::testTrim()
 {
+	// Copy trim functions
 	CPPUNIT_ASSERT( cppmt:: trim ("  haha  ")                  == "haha" );
 	CPPUNIT_ASSERT( cppmt:: trim ("\t\n \vha\t\n \vha\t\n \v") == "ha\t\n \vha");
 	CPPUNIT_ASSERT( cppmt:: trim ("    \t  \n  \v  ")          == "");
 
-	CPPUNIT_ASSERT( cppmt::ltrim ("  haha  ")                  == "haha  " );
+	CPPUNIT_ASSERT( cppmt::ltrim ("  haha  ")                  == "haha  "            );
 	CPPUNIT_ASSERT( cppmt::ltrim ("\t\n \vha\t\n \vha\t\n \v") == "ha\t\n \vha\t\n \v");
-	CPPUNIT_ASSERT( cppmt::ltrim ("    \t  \n  \v  ")          == "");
+	CPPUNIT_ASSERT( cppmt::ltrim ("    \t  \n  \v  ")          == ""                  );
 
-	CPPUNIT_ASSERT( cppmt::rtrim ("  haha  ")                  == "  haha" );
+	CPPUNIT_ASSERT( cppmt::rtrim ("  haha  ")                  == "  haha"            );
 	CPPUNIT_ASSERT( cppmt::rtrim ("\t\n \vha\t\n \vha\t\n \v") == "\t\n \vha\t\n \vha");
-	CPPUNIT_ASSERT( cppmt::rtrim ("    \t  \n  \v  ")          == "");
+	CPPUNIT_ASSERT( cppmt::rtrim ("    \t  \n  \v  ")          == ""                  );
+
+	// Copy-free trim functions
+
+	// trim 
+	{
+		cppmt::string s1 = "  haha  ";
+		cppmt::string s2 = "\t\n \vha\t\n \vha\t\n \v";
+		cppmt::string s3 = "    \t  \n  \v  ";
+
+		cppmt::trim(&s1);
+		cppmt::trim(&s2);
+		cppmt::trim(&s3);
+
+		CPPUNIT_ASSERT( s1 == "haha" );
+		CPPUNIT_ASSERT( s2 == "ha\t\n \vha");
+		CPPUNIT_ASSERT( s3 == "");
+
+	}
+
+	// ltrim
+	{
+		cppmt::string s1 = "  haha  ";
+		cppmt::string s2 = "\t\n \vha\t\n \vha\t\n \v";
+		cppmt::string s3 = "    \t  \n  \v  ";
+
+		cppmt::ltrim(&s1);
+		cppmt::ltrim(&s2);
+		cppmt::ltrim(&s3);
+
+		CPPUNIT_ASSERT( s1 == "haha  "            );
+		CPPUNIT_ASSERT( s2 == "ha\t\n \vha\t\n \v");
+		CPPUNIT_ASSERT( s3 == ""                  );
+	}
+
+	// rtrim
+	{
+		cppmt::string s1 = "  haha  ";
+		cppmt::string s2 = "\t\n \vha\t\n \vha\t\n \v";
+		cppmt::string s3 = "    \t  \n  \v  ";
+
+		cppmt::rtrim(&s1);
+		cppmt::rtrim(&s2);
+		cppmt::rtrim(&s3);
+
+		CPPUNIT_ASSERT( s1 == "  haha"            );
+		CPPUNIT_ASSERT( s2 == "\t\n \vha\t\n \vha");
+		CPPUNIT_ASSERT( s3 == ""                  );
+	}
+}
+
+void cpptTestString::testSplit()
+{
+	std::string vicious_string("\0pwet", 5);
+	std::string input_string = "pwet | gnark|| |  coucou\n|" + vicious_string + "||\t";
+	std::vector<cppmt::string> res = cppmt::split(input_string, '|');
+
+	CPPUNIT_ASSERT(res.size() == 8);
+	CPPUNIT_ASSERT(res[0] == "pwet ");
+	CPPUNIT_ASSERT(res[1] == " gnark");
+	CPPUNIT_ASSERT(res[2] == "");
+	CPPUNIT_ASSERT(res[3] == " ");
+	CPPUNIT_ASSERT(res[4] == "  coucou\n");
+	CPPUNIT_ASSERT(res[5] == vicious_string);
+	CPPUNIT_ASSERT(res[6] == "");
+	CPPUNIT_ASSERT(res[7] == "\t");
+
+	res = cppmt::split("pwet|", '|');
+	CPPUNIT_ASSERT(res.size() == 2);
+	CPPUNIT_ASSERT(res[0] == "pwet");
+	CPPUNIT_ASSERT(res[1] == ""    );
+
+	res = cppmt::split("||", '|');
+	CPPUNIT_ASSERT(res.size() == 3);
+	CPPUNIT_ASSERT(res[0] == "");
+	CPPUNIT_ASSERT(res[1] == "");
+	CPPUNIT_ASSERT(res[2] == "");
+
+	res = cppmt::split("No delimiter !", '|');
+	CPPUNIT_ASSERT(res.size() == 1);
+	CPPUNIT_ASSERT(res[0] == "No delimiter !");
 }
 

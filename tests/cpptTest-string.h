@@ -27,6 +27,7 @@ class cpptTestString: public CppUnit::TestFixture
 	CPPUNIT_TEST( testFromString );
 	CPPUNIT_TEST( testEndsWith   );
 	CPPUNIT_TEST( testTrim       );
+	CPPUNIT_TEST( testSplit      );
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -34,6 +35,7 @@ class cpptTestString: public CppUnit::TestFixture
 	void testFromString();
 	void testEndsWith();
 	void testTrim();
+	void testSplit();
 };
 
 
