@@ -27,6 +27,16 @@ extern "C"
 #include <netdb.h>
 }
 
+#define CPPMT_MAKE_BASIC_EXCEPTION_CLASS(NAME, VIRTUAL) \
+class NAME: public cppmt::exception \
+{ \
+	public: \
+	NAME(const std::string& msg_): cppmt::exception(msg_) {} \
+	VIRTUAL ~NAME() throw() {} \
+	\
+	VIRTUAL const char* type() const throw() { return #NAME ; } \
+}
+
 namespace cppmt
 {
 

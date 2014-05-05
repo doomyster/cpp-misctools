@@ -1,0 +1,28 @@
+# General constructed objects:
+*.o
+*.lo
+*.la
+
+# misc autotools files:
+/autom4te.cache
+/aclocal.m4
+/compile
+/configure
+/depcomp
+/install-sh
+/missing
+/stamp-h1
+/m4
+/libtool
+/ltmain.sh
+/config*
+**/.deps
+**/.libs
+Makefile.in
+Makefile
+
+# project generated files:
+/cpp-misctools-config
+/cpp-misctools.pc
+/src/cppmt-misctools.h
+
