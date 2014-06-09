@@ -18,10 +18,10 @@ while test $# -gt 0; do
 		echo @VERSION@
 		;;
 	--cflags)
-		echo -I@prefix@/include/cpp-misctools @PCRECPP_CFLAGS@
+		echo -I@prefix@/include/cpp-misctools @PCRECPP_CFLAGS@ @SQLITE3_CFLAGS@
 		;;
 	--libs)
-		echo -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lcpp-misctools @PCRECPP_LIBS@
+		echo -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lcpp-misctools @PCRECPP_LIBS@ @SQLITE3_LIBS@
 		;;
 	*)
 		echo "${usage}" 1>&2
