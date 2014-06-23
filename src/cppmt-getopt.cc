@@ -241,10 +241,10 @@ int Opts::get(int argc, char** argv, int force_optind)
 
 void Opts::handle_line(const std::string& line)
 {
-	static pcrecpp::RE dquo ("^\\s*([^=\\s]+)\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*+)\"\\s*(?:#.*)?$");
-	static pcrecpp::RE squo ("^\\s*([^=\\s]+)\\s*=\\s*'((?:[^'\\\\]|\\\\.)*+)'\\s*(?:#.*)?$");
-	static pcrecpp::RE nquo ("^\\s*([^=\\s]+)\\s*=\\s*([^#]*)\\s*(?:#.*)?$");
-	static pcrecpp::RE empty("^\\s*(?:#.*)*$");
+	static pcrecpp::RE dquo ("^\\s*([^=\\s]+)\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*+)\"\\s*(?:#.*)?\\r?$");
+	static pcrecpp::RE squo ("^\\s*([^=\\s]+)\\s*=\\s*'((?:[^'\\\\]|\\\\.)*+)'\\s*(?:#.*)?\\r?$");
+	static pcrecpp::RE nquo ("^\\s*([^=\\s]+)\\s*=\\s*([^#]*)\\s*(?:#.*)?$\\r?");
+	static pcrecpp::RE empty("^\\s*(?:#.*)*\\r?$");
 	static pcrecpp::RE rep_dquote("\\\\\"");
 	static pcrecpp::RE rep_squote("\\\\'");
 
