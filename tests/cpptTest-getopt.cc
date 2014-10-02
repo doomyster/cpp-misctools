@@ -18,6 +18,9 @@
 #include <cstdlib>
 #include <stdarg.h>
 
+#include <sys/types.h>
+#include <unistd.h>
+
 CPPUNIT_TEST_SUITE_REGISTRATION( cpptTestGetOpt );
 
 
@@ -30,10 +33,9 @@ class arg_t
 
 	public:
 	arg_t(): argv(NULL), argc(0) {}
-	arg_t(const char* arg0, ...)     { va_list va; va_start(va, arg0); init__(arg0, va); va_end(va); }
-	void init(const char* arg0, ...) { va_list va; va_start(va, arg0); init__(arg0, va); va_end(va); }
-	protected:
-	void init__(const char* arg0, va_list va)
+	arg_t(const char* arg0, ...)     { va_list va; va_start(va, arg0); init(arg0, va); va_end(va); }
+	void init(const char* arg0, ...) { va_list va; va_start(va, arg0); init(arg0, va); va_end(va); }
+	void init(const char* arg0, va_list va)
 	{
 		std::vector<cppmt::string> args;
 		args.push_back(arg0);
@@ -360,5 +362,118 @@ void cpptTestGetOpt::testConfigFile()
 	CPPUNIT_ASSERT(d[3] == "default4");
 
 	CPPUNIT_ASSERT(o.got_errors() == false);
+}
+
+class config2
+{
+	public:
+	std::string file;
+
+	std::string required_opt;
+	std::string optional_opt;
+	bool              no_opt;
+
+	std::string cfg_file;
+	arg_t args;
+
+	std::string expected_required_opt;
+	std::string expected_optional_opt;
+	bool        expected_no_opt;
+	bool expected_errors;
+	bool isEnd;
+
+	config2(): isEnd(true) {}
+	config2(const std::string& exp_req_opt, const std::string& exp_opt_opt, bool exp_no_opt,
+		bool exp_errors, const std::string& cfg_file_,
+		const char* arg0, ...): required_opt("o1"),
+		                        optional_opt("o2"),
+					      no_opt(false),
+	                                cfg_file(cfg_file_),
+					expected_required_opt(exp_req_opt),
+					expected_optional_opt(exp_opt_opt),
+					expected_no_opt(exp_no_opt),
+					expected_errors(exp_errors),
+					isEnd(false) {
+		va_list va;
+		va_start(va, arg0);
+		args.init(arg0, va);
+		va_end(va);
+	}
+
+	void writeFile(const std::string& f)
+	{
+		std::ofstream os(f.c_str(), std::ios_base::trunc);
+		if (os.is_open() == false) {
+			throw "arg";
+		}
+		file = f;
+		os << cfg_file;
+		os.close();
+	}
+	void unlinkFile()
+	{
+		if (file.empty() == false) {
+			unlink(file.c_str());
+		}
+	}
+
+};
+
+config2* get_config2_table(const std::string& file)
+{
+	static config2 c[] = { config2("value", "o2", true,
+	                               false, "opt1=value\nopt2\nopt3\n",
+			               "./a.out", "-c", file.c_str(), NULL),
+			       config2("value", "VALUE", true,
+			               false, "opt1=value\nopt2=VALUE\nopt3\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+			       config2("o1", "VALUE", true,
+			               true, "opt1\nopt2=VALUE\nopt3\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+			       config2("value", "VALUE", false,
+			               true, "opt1=value\nopt2=VALUE\nopt3=VaLuE\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+			       config2("value", "o2", true,
+			               false, "-1=value\n-2\n-3\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+			       config2("value", "VALUE", true,
+			               false, "-1=value\n-2=VALUE\n-3\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+			       config2("value", "VALUE", false,
+			               true, "-1=value\n-2=VALUE\n-3=44\n",
+				       "./a.out", "-c", file.c_str(), NULL),
+		               config2() };
+	return c;
+}
+
+void cpptTestGetOpt::testConfigFile2()
+{
+	std::string file = "/tmp/cppmt-getopt." + cppmt::toString(getpid()) + ".cfg";
+	config2* c = get_config2_table(file);
+
+	while(!c->isEnd)
+	{
+		std::stringstream ss;
+		cppmt::Opts o(std::cout, ss);
+
+		o.add("opt1", '1', "", required_argument, &c->required_opt);
+		o.add("opt2", '2', "", optional_argument, &c->optional_opt);
+		o.add("opt3", '3', "",                    &c->      no_opt);
+
+		o.auto_config_file("config",  'c', "Set a configuration file.");
+
+		arg_t ar("./a.out", "-c", file.c_str(), NULL);
+		c->writeFile(file);
+		o.get(c->args.argc, c->args.argv);
+		c->unlinkFile();
+
+		CPPUNIT_ASSERT(c->required_opt == c->expected_required_opt);
+		CPPUNIT_ASSERT(c->optional_opt == c->expected_optional_opt);
+		CPPUNIT_ASSERT(c->      no_opt == c->expected_no_opt);
+
+		CPPUNIT_ASSERT(o.got_errors() == c->expected_errors);
+
+		++c;
+	}
 }
 

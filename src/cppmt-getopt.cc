@@ -241,15 +241,17 @@ int Opts::get(int argc, char** argv, int force_optind)
 
 void Opts::handle_line(const std::string& line)
 {
-	static pcrecpp::RE dquo ("^\\s*([^=\\s]+)\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*+)\"\\s*(?:#.*)?\\r?$");
-	static pcrecpp::RE squo ("^\\s*([^=\\s]+)\\s*=\\s*'((?:[^'\\\\]|\\\\.)*+)'\\s*(?:#.*)?\\r?$");
-	static pcrecpp::RE nquo ("^\\s*([^=\\s]+)\\s*=\\s*([^#]*)\\s*(?:#.*)?$\\r?");
+	static pcrecpp::RE dquo     ("^\\s*([^=\\s]+)\\s*=\\s*\"((?:[^\"\\\\]|\\\\.)*+)\"\\s*(?:#.*)?\\r?$");
+	static pcrecpp::RE squo     ("^\\s*([^=\\s]+)\\s*=\\s*'((?:[^'\\\\]|\\\\.)*+)'\\s*(?:#.*)?\\r?$");
+	static pcrecpp::RE nquo     ("^\\s*([^=\\s]+)\\s*=\\s*([^#]*)\\s*(?:#.*)?$\\r?");
+	static pcrecpp::RE name_only("^\\s*([^=\\s]+)\\s*(?:#.*)?$\\r?");
 	static pcrecpp::RE empty("^\\s*(?:#.*)*\\r?$");
 	static pcrecpp::RE rep_dquote("\\\\\"");
 	static pcrecpp::RE rep_squote("\\\\'");
 
 	std::string opt_name;
 	std::string opt_value;
+	bool has_opt_value = true;
 	bool quoted = false;
 
 	if (line.empty() || empty.FullMatch(line)) {
@@ -265,27 +267,45 @@ void Opts::handle_line(const std::string& line)
 	}
 	else if (nquo.FullMatch(line, &opt_name, &opt_value)) {
 	}
+	else if (name_only.FullMatch(line, &opt_name)) {
+		has_opt_value = false;
+	}
 	else {
 		err_stream__ << "read(" << config_file__ << "): invalid line: `" << line << "`" << std::endl;
 		return;
 	}
 
-	opt_name  = trim(opt_name);
-	if (!quoted) {
+	opt_name = trim(opt_name);
+	if (!quoted && has_opt_value) {
 		opt_value = trim(opt_value);
 	}
 
 	std::vector<opt_t>::iterator it;
 	for (it = all_opts__.begin(); it != all_opts__.end(); ++it) {
-		if (it->long_opt == opt_name && it->was_in_command_line == false && it->conv && it->recv_opt) {
-			char* o = strdup(opt_value.c_str());
-			const string& res = it->conv(it->recv_opt, o);
-			free(o);
-
-			if (res.empty() == false) {
+		char* o = (has_opt_value ? strdup(opt_value.c_str()): NULL);
+		std::string short_opt = (it->short_opt != 0) ? (std::string("-") + it->short_opt): std::string();
+		if (it->long_opt == opt_name || short_opt == opt_name)
+		{
+			if (it->has_arg == no_argument && has_opt_value) {
 				got_errors__ = true;
-				err_stream__ << "In config file `" << config_file__ << "`, option " << opt_name << ": " << res << std::endl;
+				err_stream__ << "option '" << opt_name << "' doesn't allow an argument" << std::endl;
 			}
+			else if (it->has_arg == required_argument && !has_opt_value) {
+				got_errors__ = true;
+				err_stream__ << "option requires an argument -- '" << opt_name << "'" << std::endl;
+			}
+			else {
+				if (it->was_in_command_line == false && it->conv && it->recv_opt) {
+					const string& res = it->conv(it->recv_opt, o);
+					free(o);
+
+					if (res.empty() == false) {
+						got_errors__ = true;
+						err_stream__ << "In config file `" << config_file__ << "`, option " << opt_name << ": " << res << std::endl;
+					}
+				}
+			}
+			break;
 		}
 	}
 }

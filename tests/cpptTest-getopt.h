@@ -29,6 +29,7 @@ class cpptTestGetOpt: public CppUnit::TestFixture
 	CPPUNIT_TEST( testOnlyLong   );
 	CPPUNIT_TEST( testOnlyShort  );
 	CPPUNIT_TEST( testConfigFile );
+	CPPUNIT_TEST( testConfigFile2);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -38,6 +39,7 @@ class cpptTestGetOpt: public CppUnit::TestFixture
 	void testOnlyLong();
 	void testOnlyShort();
 	void testConfigFile();
+	void testConfigFile2();
 };
 
 
