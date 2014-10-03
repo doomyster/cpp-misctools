@@ -446,6 +446,7 @@ config2* get_config2_table(const std::string& file)
 	return c;
 }
 
+// Test for short options in cfg files, test for options without arguments in cfg files
 void cpptTestGetOpt::testConfigFile2()
 {
 	std::string file = "/tmp/cppmt-getopt." + cppmt::toString(getpid()) + ".cfg";
@@ -472,6 +473,87 @@ void cpptTestGetOpt::testConfigFile2()
 		CPPUNIT_ASSERT(c->      no_opt == c->expected_no_opt);
 
 		CPPUNIT_ASSERT(o.got_errors() == c->expected_errors);
+
+		++c;
+	}
+}
+
+bool* getExitedStatus()
+{
+	static bool exited = false;
+
+	return &exited;
+}
+
+void resetExitStatus()
+{
+	*getExitedStatus() = false;
+}
+
+void callExit(int)
+{
+	*getExitedStatus() = true;
+}
+
+class testCfgExit
+{
+	public:
+	std::string cfgFile;
+	cppmt::Opts::cfg_fail_t failOpt;
+
+	bool expected_errors;
+	bool expected_exit;
+
+	bool isEnd;
+
+	testCfgExit(): isEnd(true) {}
+	testCfgExit(const std::string& cfgF, cppmt::Opts::cfg_fail_t failAct, bool exp_errors, bool exp_exit):
+		cfgFile(cfgF),
+		failOpt(failAct),
+		expected_errors(exp_errors),
+		expected_exit(exp_exit),
+		isEnd(false) {}
+};
+
+testCfgExit* getCfgExitTable(void)
+{
+	static testCfgExit c[] = { testCfgExit("tests_02.getopt.cfg", cppmt::Opts::SILENT_CONTINUE_ON_OPEN_FAILURE, false, false), // file exists
+	                           testCfgExit("tests_02.getopt.cfg", cppmt::Opts::       CONTINUE_ON_OPEN_FAILURE, false, false),
+				   testCfgExit("tests_02.getopt.cfg", cppmt::Opts::           EXIT_ON_OPEN_FAILURE, false, false),
+		                   testCfgExit("/no_exist.cfg",       cppmt::Opts::SILENT_CONTINUE_ON_OPEN_FAILURE, false, false), // bad file
+		                   testCfgExit("/no_exist.cfg",       cppmt::Opts::       CONTINUE_ON_OPEN_FAILURE,  true, false),
+		                   testCfgExit("/no_exist.cfg",       cppmt::Opts::           EXIT_ON_OPEN_FAILURE,  true,  true),
+	                           testCfgExit() };
+	
+	return c;
+}
+
+void cpptTestGetOpt::testConfigFile3()
+{
+	testCfgExit* c = getCfgExitTable();
+
+	while(!c->isEnd) {
+		std::stringstream ss;
+		cppmt::Opts o(std::cout, ss);
+		o.set_exit_func(callExit);
+
+		std::string opt1;
+		std::string opt2;
+		bool opt3;
+
+		o.add("opt1", '1', "help string", required_argument, &opt1);
+		o.add("opt2", '2', "help string", optional_argument, &opt2);
+		o.add("opt3", '3', "help string", &opt3);
+
+		o.auto_config_file("config", 'c', "help string", c->failOpt);
+
+		arg_t ar("./a.out", "-c", c->cfgFile.c_str(), NULL);
+		o.get(ar.argc, ar.argv);
+
+		CPPUNIT_ASSERT_MESSAGE(ss.str(),     o.got_errors() == c->expected_errors);
+		CPPUNIT_ASSERT(                  *getExitedStatus() == c->expected_exit  );
+
+		resetExitStatus();
 
 		++c;
 	}

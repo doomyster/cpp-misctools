@@ -1,0 +1,5 @@
+2014-10-02 Nicolas Normand <nnormand@justcodeit.org>
+	* cppmt::Opts: support for short options in configuration files, support for options without arguments in configuration files.
+
+2014-10-03 Nicolas Normand <nnormand@justcodeit.org>
+	* cppmt::Opts: can choose behavior when opening configuration file fails (report error, ignore error or direct exit).

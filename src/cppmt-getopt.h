@@ -30,6 +30,12 @@ class Opts
 {
 	public:
 	typedef string (*convert_t)(void*, char*);
+	typedef enum
+	{
+		EXIT_ON_OPEN_FAILURE,
+		CONTINUE_ON_OPEN_FAILURE,
+		SILENT_CONTINUE_ON_OPEN_FAILURE
+	} cfg_fail_t;
 
 	protected:
 	struct opt_t
@@ -46,6 +52,9 @@ class Opts
 		opt_t(const string& long_opt, char short_opt, const string& helpstring, int has_arg, void* recv_opt, convert_t conv);
 	};
 
+	bool fail_on_open_error__;
+	bool silent_on_open_error__;
+
 	bool got_errors__;
 	bool autoshow_help__;
 	bool autoshow_version__;
@@ -60,7 +69,7 @@ class Opts
 	bool find_same_opt(const string& long_opt, char short_opt) const;
 	void build_struct_option_array(std::vector<struct option>& opts, string& short_opts, int* flag) const;
 	static string convert_flag(void* recv_opt, char* opt_arg);
-	void read_config_file();
+	int read_config_file();
 	void handle_line(const std::string& line);
 
 	public:
@@ -75,6 +84,7 @@ class Opts
 	int add(const string& long_opt, char short_opt, const string& helpstring, bool* flag);
 
 	int auto_config_file(const string& long_opt, char short_opt, const string& helpstring, const string& default_location="");
+	int auto_config_file(const string& long_opt, char short_opt, const string& helpstring, cfg_fail_t fail, const string& default_location="");
 	int auto_help(); // Add option "--help", "-h". Uses "-H" if option "-h" exists
 	int auto_version(const string& version); // If version.empty() == true, disable this feature. Add option "--version", "-v". Uses "-V" if option "-v" exists
 

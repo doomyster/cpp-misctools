@@ -99,6 +99,25 @@ int Opts::add(const string& long_opt, char short_opt, const string& helpstring, 
 
 int Opts::auto_config_file(const string& long_opt, char short_opt, const string& helpstring, const string& default_location)
 {
+	fail_on_open_error__ = false;
+	silent_on_open_error__ = false;
+	return add(long_opt, short_opt, helpstring, required_argument, &config_file__);
+}
+
+int Opts::auto_config_file(const string& long_opt, char short_opt, const string& helpstring, Opts::cfg_fail_t fail, const string& default_location)
+{
+	if (fail == EXIT_ON_OPEN_FAILURE) {
+	fail_on_open_error__ = true;
+	silent_on_open_error__ = false;
+	}
+	else if (fail == SILENT_CONTINUE_ON_OPEN_FAILURE) {
+		fail_on_open_error__ = false;
+		silent_on_open_error__ = true;
+	}
+	else {
+		fail_on_open_error__ = false;
+		silent_on_open_error__ = false;
+	}
 	config_file__ = default_location;
 	return add(long_opt, short_opt, helpstring, required_argument, &config_file__);
 }
@@ -233,7 +252,9 @@ int Opts::get(int argc, char** argv, int force_optind)
 	}
 	if (!config_file__.empty())
 	{
-		read_config_file();
+		if (read_config_file() != 0) {
+			exit_func__(1);
+		}
 	}
 
 	return optind;
@@ -310,15 +331,25 @@ void Opts::handle_line(const std::string& line)
 	}
 }
 
-void Opts::read_config_file()
+int Opts::read_config_file()
 {
 	FILE* f = fopen(config_file__.c_str(), "r");
 	if (f == NULL)
 	{
 		int e = errno;
-		err_stream__ << "open(" << config_file__ << "): " << strerror(e) << std::endl;
-		got_errors__ = true;
-		return;
+		// Test if must report errors
+		if (fail_on_open_error__ || !silent_on_open_error__) {
+			err_stream__ << "open(" << config_file__ << "): " << strerror(e) << std::endl;
+			got_errors__ = true;
+		}
+
+		// Test if must exit
+		if (fail_on_open_error__) {
+			return 1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 	size_t t;
@@ -344,6 +375,7 @@ void Opts::read_config_file()
 	}
 
 	fclose(f);
+	return 0;
 }
 
 void Opts::show_help()
