@@ -433,7 +433,7 @@ void Opts::show_help()
 				if (it->has_arg == 1)
 					longopt_helpstring += "=<ARG>";
 				else if (it->has_arg == 2)
-					longopt_helpstring += "=[<ARG>]";
+					longopt_helpstring += "[=<ARG>]";
 			}
 
 

@@ -2,6 +2,7 @@
 	* cppmt::Opts: can choose behavior when opening configuration file fails (report error, ignore error or direct exit).
 	* cppmt::Opts: can choose option (long and short) names for help and version, as well as help strings.
 	* cppmt::Opts: can set a prefix message for generated help.
+	* cppmt::Opts: [fix] fixed help message for generated help, for optional arguments (writes '[=<ARG>]' instead of '=[<ARG>]').
 
 2014-10-02 Nicolas Normand <nnormand@justcodeit.org>
 	* cppmt::Opts: support for short options in configuration files, support for options without arguments in configuration files.
