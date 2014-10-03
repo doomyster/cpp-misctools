@@ -107,8 +107,8 @@ int Opts::auto_config_file(const string& long_opt, char short_opt, const string&
 int Opts::auto_config_file(const string& long_opt, char short_opt, const string& helpstring, Opts::cfg_fail_t fail, const string& default_location)
 {
 	if (fail == EXIT_ON_OPEN_FAILURE) {
-	fail_on_open_error__ = true;
-	silent_on_open_error__ = false;
+		fail_on_open_error__ = true;
+		silent_on_open_error__ = false;
 	}
 	else if (fail == SILENT_CONTINUE_ON_OPEN_FAILURE) {
 		fail_on_open_error__ = false;
@@ -154,6 +154,11 @@ int Opts::auto_version(const string& version, const string& long_opt, char short
 	int res = add(long_opt, short_opt, helpstring, &autoshow_version__);
 	version__ = version;
 	return res;
+}
+
+void Opts::set_help_prefix_message(const string& help_prefix)
+{
+	help_prefix__ = help_prefix;
 }
 
 void Opts::build_struct_option_array(std::vector<struct option>& opts, string& short_opts, int* flag) const
@@ -394,6 +399,10 @@ void Opts::show_help()
 {
 	if (version__.empty() == false)
 		out_stream__ << version__ << std::endl;
+
+	if (help_prefix__.empty() == false) {
+		out_stream__ << help_prefix__ << std::endl;
+	}
 
 	std::vector<std::vector<string> > help_strings;
 	unsigned int  longoptlen_max = 0;

@@ -58,7 +58,8 @@ class Opts
 	bool got_errors__;
 	bool autoshow_help__;
 	bool autoshow_version__;
-	string   version__;
+	string version__;
+	string help_prefix__;
 	std::ostream& out_stream__;
 	std::ostream& err_stream__;
 	void (*exit_func__)(int);
@@ -89,6 +90,8 @@ class Opts
 	int auto_help(const string& long_opt, char short_opt, const string& helpstring="Show this help and exit");
 	int auto_version(const string& version); // If version.empty() == true, disable this feature. Add option "--version", "-v". Uses "-V" if option "-v" exists
 	int auto_version(const string& version, const string& long_opt, char short_opt, const string& helpstring="show version and exit");
+
+	void set_help_prefix_message(const string& help_prefix);
 
 	int get(int argc, char** argv, int force_optind=1); // Returns optind
 	bool got_errors() const;
