@@ -86,7 +86,9 @@ class Opts
 	int auto_config_file(const string& long_opt, char short_opt, const string& helpstring, const string& default_location="");
 	int auto_config_file(const string& long_opt, char short_opt, const string& helpstring, cfg_fail_t fail, const string& default_location="");
 	int auto_help(); // Add option "--help", "-h". Uses "-H" if option "-h" exists
+	int auto_help(const string& long_opt, char short_opt, const string& helpstring="Show this help and exit");
 	int auto_version(const string& version); // If version.empty() == true, disable this feature. Add option "--version", "-v". Uses "-V" if option "-v" exists
+	int auto_version(const string& version, const string& long_opt, char short_opt, const string& helpstring="show version and exit");
 
 	int get(int argc, char** argv, int force_optind=1); // Returns optind
 	bool got_errors() const;

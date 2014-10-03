@@ -130,6 +130,11 @@ int Opts::auto_help()
 	return res;
 }
 
+int Opts::auto_help(const string& long_opt, char short_opt, const string& helpstring)
+{
+	return add(long_opt, short_opt, helpstring, &autoshow_help__);
+}
+
 int Opts::auto_version(const string& version)
 {
 	int res = add("version", 'v', "Show version and exit", &autoshow_version__);
@@ -140,6 +145,13 @@ int Opts::auto_version(const string& version)
 			version__ = version;
 		return res;
 	}
+	version__ = version;
+	return res;
+}
+
+int Opts::auto_version(const string& version, const string& long_opt, char short_opt, const string& helpstring)
+{
+	int res = add(long_opt, short_opt, helpstring, &autoshow_version__);
 	version__ = version;
 	return res;
 }
