@@ -54,6 +54,12 @@ Sqlite::result_t Sqlite::exec(const string& query)
 	return res;
 }
 
+void Sqlite::exec(const string& query, Sqlite::result_t* res)
+{
+	res->clear();
+	exec(query, Sqlite::cb_function, reinterpret_cast<void*>(res));
+}
+
 sqlite3_int64 Sqlite::exec(const string& query, const Sqlite::rowid_t& rid)
 {
 	exec(query, no_result);
