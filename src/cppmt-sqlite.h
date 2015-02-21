@@ -27,7 +27,7 @@ namespace cppmt
 class sqlite_exception: public exception
 {
 	public:
-	class close_t {};
+	class close_t { public: close_t() {} };
 	static const close_t close_db;
 
 	sqlite_exception(sqlite3* db,      const string& msg):                   exception((msg + ": ") + sqlite3_errmsg(db)) {}
@@ -41,8 +41,8 @@ class sqlite_exception: public exception
 class Sqlite
 {
 	public:
-	class no_result_t {};
-	class rowid_t {};
+	class no_result_t { public: no_result_t() {} };
+	class rowid_t { public: rowid_t() {} };
 	static const no_result_t no_result;
 	static const rowid_t rowid;
 

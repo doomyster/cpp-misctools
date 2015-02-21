@@ -4,9 +4,9 @@
 namespace cppmt
 {
 
-const sqlite_exception::close_t sqlite_exception::close_db;
-const Sqlite::no_result_t Sqlite::no_result;
-const Sqlite::    rowid_t Sqlite::rowid;
+const sqlite_exception::close_t sqlite_exception::close_db = sqlite_exception::close_t();
+const Sqlite::no_result_t Sqlite::no_result = Sqlite::no_result_t();
+const Sqlite::    rowid_t Sqlite::rowid = Sqlite::rowid_t();
 
 
 Sqlite::Sqlite(const string& file)
