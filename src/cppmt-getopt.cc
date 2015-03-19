@@ -322,6 +322,9 @@ void Opts::read_config_file()
 		err_stream__ << "getline(" << config_file__ << "): " << strerror(e) << std::endl;
 		got_errors__ = true;
 	}
+	if (line) {
+		free(line); // Last call might still allocate memory.
+	}
 
 	fclose(f);
 }
