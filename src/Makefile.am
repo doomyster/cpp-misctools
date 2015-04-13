@@ -8,7 +8,6 @@ libcpp_misctools_la_include_HEADERS = cppmt-exceptions.h cppmt-getopt.h cppmt-ge
 libcpp_misctools_la_CXXFLAGS  = @PCRECPP_CFLAGS@
 libcpp_misctools_la_LIBADD    = @PCRECPP_LIBS@
 
-if BUILD_SQLITE_CLASS
 libcpp_misctools_la_SOURCES += cppmt-sqlite-main.cc \
                                cppmt-sqlite-cell_t.cc \
 			       cppmt-sqlite-result_t.cc \
@@ -18,5 +17,4 @@ libcpp_misctools_la_include_HEADERS += cppmt-sqlite.h cppmt-sqlite.hxx
 
 libcpp_misctools_la_CXXFLAGS += @SQLITE3_CFLAGS@
 libcpp_misctools_la_LIBADD   += @SQLITE3_LIBS@
-endif
 

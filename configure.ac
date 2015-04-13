@@ -9,11 +9,7 @@ AC_PROG_LIBTOOL
 AC_PROG_CXX
 AM_PATH_CPPUNIT
 PKG_CHECK_MODULES([PCRECPP], [libpcrecpp])
-PKG_CHECK_MODULES([SQLITE3], [sqlite3],
-                                        [AM_CONDITIONAL(BUILD_SQLITE_CLASS, true)
-					 HAVE_SQLITE3="#define CPPMT_HAVE_SQLITE"],
-					[AM_CONDITIONAL(BUILD_SQLITE_CLASS, false)
-					 HAVE_SQLITE3=""])
+PKG_CHECK_MODULES([SQLITE3], [sqlite3])
 
 VERSION_MAJOR=m4_esyscmd([sed -e 's/\..*//g' VERSION])
 VERSION_MINOR=m4_esyscmd([sed -e 's/[^.]*\.//1' -e 's/\..*//g' VERSION])
