@@ -7,7 +7,7 @@ Name: cpp-misctools
 Description: C++ Miscellaneous tools library.
 Version: @VERSION@
 Requires: libpcre
-Libs: -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lcpp-misctools @PCRECPP_LIBS@ @SQLITE3_LIBS@
+Libs: -L@prefix@/lib/ -Wl,-rpath,@prefix@/lib -lcpp-misctools @PCRECPP_LIBS@ @SQLITE3_LIBS@ @ZLIB_LIBS@
 Libs.private: -lpcrecpp
-Cflags: -I@prefix@/include/cpp-misctools @PCRECPP_CFLAGS@ @SQLITE3_CFLAGS@
+Cflags: -I@prefix@/include/cpp-misctools @PCRECPP_CFLAGS@ @SQLITE3_CFLAGS@ @ZLIB_CFLAGS@
 
