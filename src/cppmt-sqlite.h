@@ -148,6 +148,7 @@ class Sqlite
 	result_t      exec(const string& query);
 
 	void saveInto(Sqlite& dest);
+	sqlite3* getDB() { return db__; }
 };
 
 } // End of: namespace cppmt
