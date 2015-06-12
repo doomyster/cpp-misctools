@@ -11,6 +11,7 @@ AM_PATH_CPPUNIT
 PKG_CHECK_MODULES([PCRECPP], [libpcrecpp])
 PKG_CHECK_MODULES([SQLITE3], [sqlite3])
 PKG_CHECK_MODULES([ZLIB],    [zlib])
+AC_SEARCH_LIBS([base64_encode_value], [b64], [], [AC_MSG_ERROR([unable to find the libb64 library])] )
 
 VERSION_MAJOR=m4_esyscmd([sed -e 's/\..*//g' VERSION])
 VERSION_MINOR=m4_esyscmd([sed -e 's/[^.]*\.//1' -e 's/\..*//g' VERSION])
