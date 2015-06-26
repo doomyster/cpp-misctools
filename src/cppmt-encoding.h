@@ -20,7 +20,7 @@ std::string decode(const std:: string& in);
 void        decode(const std:: string& in, std:: string& out);
 void        decode(      std::istream& is, std::ostream& os );
 
-} // End of: namespace cppmt
+} // End of: namespace base64
 
 } // End of: namespace cppmt
 

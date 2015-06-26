@@ -67,7 +67,7 @@ void decode(std::istream& is, std::ostream& os)
 	dec.decode(is, os);
 }
 
-} // End of: namespace cppmt
+} // End of: namespace base64
 
 } // End of: namespace cppmt
 
