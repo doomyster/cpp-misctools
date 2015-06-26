@@ -27,7 +27,7 @@ namespace cppmt
 class sqlite_exception: public exception
 {
 	public:
-	class close_t {};
+	class close_t { public: close_t() {} };
 	static const close_t close_db;
 
 	sqlite_exception(sqlite3* db,      const string& msg):                   exception((msg + ": ") + sqlite3_errmsg(db)) {}
@@ -41,8 +41,8 @@ class sqlite_exception: public exception
 class Sqlite
 {
 	public:
-	class no_result_t {};
-	class rowid_t {};
+	class no_result_t { public: no_result_t() {} };
+	class rowid_t { public: rowid_t() {} };
 	static const no_result_t no_result;
 	static const rowid_t rowid;
 
@@ -108,11 +108,15 @@ class Sqlite
 		rows_vector_t rows__;
 		mutable rows_vector_t::const_iterator current__;
 
-		result_t();
-
 		void add(int argc, char** argv, char** name);
 
 		public:
+		result_t();
+		result_t(const result_t& r);
+		result_t& operator=(const result_t& r);
+
+		void clear();
+
 		const string& getValue     (int idx)           const;
 		const string& getValue     (const string& col) const;
 		bool          isNull       (int idx)           const;
@@ -146,6 +150,7 @@ class Sqlite
 	void          exec(const string& query, sqlite_cb cb, void* data);
 	sqlite3_int64 exec(const string& query, const rowid_t& rid);
 	result_t      exec(const string& query);
+	void          exec(const string& query, result_t* res); // can save a vector copy
 
 	void saveInto(Sqlite& dest);
 	sqlite3* getDB() { return db__; }

@@ -4,9 +4,9 @@
 namespace cppmt
 {
 
-const sqlite_exception::close_t sqlite_exception::close_db;
-const Sqlite::no_result_t Sqlite::no_result;
-const Sqlite::    rowid_t Sqlite::rowid;
+const sqlite_exception::close_t sqlite_exception::close_db = sqlite_exception::close_t();
+const Sqlite::no_result_t Sqlite::no_result = Sqlite::no_result_t();
+const Sqlite::    rowid_t Sqlite::rowid = Sqlite::rowid_t();
 
 
 Sqlite::Sqlite(const string& file)
@@ -52,6 +52,12 @@ Sqlite::result_t Sqlite::exec(const string& query)
 	Sqlite::result_t res;
 	exec(query, Sqlite::cb_function, reinterpret_cast<void*>(&res));
 	return res;
+}
+
+void Sqlite::exec(const string& query, Sqlite::result_t* res)
+{
+	res->clear();
+	exec(query, Sqlite::cb_function, reinterpret_cast<void*>(res));
 }
 
 sqlite3_int64 Sqlite::exec(const string& query, const Sqlite::rowid_t& rid)
