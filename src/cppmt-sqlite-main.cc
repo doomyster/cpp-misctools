@@ -34,7 +34,7 @@ void Sqlite::exec(const string& query, Sqlite::sqlite_cb cb, void* data)
 	if (rc != SQLITE_OK) {
 		string err = zError;
 		sqlite3_free(zError);
-		throw sqlite_exception("exec", err);
+		throw sqlite_exception("exec", err, query);
 	}
 }
 

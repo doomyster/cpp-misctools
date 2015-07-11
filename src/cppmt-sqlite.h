@@ -30,9 +30,10 @@ class sqlite_exception: public exception
 	class close_t { public: close_t() {} };
 	static const close_t close_db;
 
-	sqlite_exception(sqlite3* db,      const string& msg):                   exception((msg + ": ") + sqlite3_errmsg(db)) {}
-	sqlite_exception(const string& fn, const string& msg):                   exception( fn  + ": "  + msg               ) {}
-	sqlite_exception(sqlite3* db,      const string& msg, const close_t& c): exception((msg + ": ") + sqlite3_errmsg(db)) { sqlite3_close(db); }
+	sqlite_exception(sqlite3* db,      const string& msg):                        exception((msg + ": ") + sqlite3_errmsg(db))           {}
+	sqlite_exception(const string& fn, const string& msg):                        exception( fn  + ": "  + msg               )           {}
+	sqlite_exception(const string& fn, const string& msg, const std::string& rq): exception( fn  + ": "  + msg + "; Request was: " + rq) {}
+	sqlite_exception(sqlite3* db,      const string& msg, const close_t& c):      exception((msg + ": ") + sqlite3_errmsg(db))           { sqlite3_close(db); }
 	~sqlite_exception() throw() {}
 
 	virtual const char* type() const throw() { return "sqlite_exception"; }
@@ -138,6 +139,11 @@ class Sqlite
 	sqlite3* db__;
 
 	static int cb_function(void* data, int argc, char** argv, char** colName);
+
+	private:
+	// Forbid these constructions; seems to lead to incorrect states
+	Sqlite(const Sqlite& s) {}
+	Sqlite& operator=(const Sqlite& s) { return *this; }
 
 	public:
 	typedef int (*sqlite_cb)(void*, int, char**, char**); // data, argc, argv, column_name
