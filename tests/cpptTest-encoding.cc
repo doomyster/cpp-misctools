@@ -125,7 +125,7 @@ void cpptTestEncoding::testBase64()
 		// Test interface 0:
 		{
 			std::string o = cppmt::base64::encode(reinterpret_cast<char*>(src), sizeof(float) * 512);
-			for (int i=0; i<o.size(); ++i) {
+			for (unsigned int i=0; i<o.size(); ++i) {
 				CPPUNIT_ASSERT(::isprint(o.data()[i]) || o.data()[i] == '\n');
 			}
 			o.erase(remove(o.begin(), o.end(), '\n'), o.end());
@@ -144,7 +144,7 @@ void cpptTestEncoding::testBase64()
 		{
 			std::string s_src(reinterpret_cast<char*>(src), sizeof(float) * 512);
 			std::string o = cppmt::base64::encode(s_src);
-			for (int i=0; i<o.size(); ++i) {
+			for (unsigned int i=0; i<o.size(); ++i) {
 				CPPUNIT_ASSERT(::isprint(o.data()[i]) || o.data()[i] == '\n');
 			}
 			o.erase(remove(o.begin(), o.end(), '\n'), o.end());
@@ -164,7 +164,7 @@ void cpptTestEncoding::testBase64()
 			std::string s_src(reinterpret_cast<char*>(src), sizeof(float) * 512);
 			std::string o;
 			cppmt::base64::encode(s_src, o);
-			for (int i=0; i<o.size(); ++i) {
+			for (unsigned int i=0; i<o.size(); ++i) {
 				CPPUNIT_ASSERT(::isprint(o.data()[i]) || o.data()[i] == '\n');
 			}
 			o.erase(remove(o.begin(), o.end(), '\n'), o.end());
@@ -187,7 +187,7 @@ void cpptTestEncoding::testBase64()
 			ss_i.write(reinterpret_cast<char*>(src), sizeof(float) * 512);
 			cppmt::base64::encode(ss_i, ss_o);
 			std::string o = ss_o.str();
-			for (int i=0; i<o.size(); ++i) {
+			for (unsigned int i=0; i<o.size(); ++i) {
 				CPPUNIT_ASSERT(::isprint(o.data()[i]) || o.data()[i] == '\n');
 			}
 			o.erase(remove(o.begin(), o.end(), '\n'), o.end());

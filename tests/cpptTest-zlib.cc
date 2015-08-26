@@ -53,7 +53,6 @@ void cpptTestZlib::testDeflate()
 	int status1;
 	int status2;
 	int status3;
-	bool do_flush = false;
 	do {
 		char buf[4096];
 		is.read(buf, 4096);
