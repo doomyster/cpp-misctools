@@ -1,3 +1,7 @@
+2014-07-11 Nicolas Normand <nnormand@justcodeit.org>
+	* Version 0.2.0
+	* cppmt::Sqlite: Forbid copy constructor and operator= for class Sqlite.
+	* cppmt::Sqlite: Exception will show query.
 2014-10-03 Nicolas Normand <nnormand@justcodeit.org>
 	* cppmt::Opts: can choose behavior when opening configuration file fails (report error, ignore error or direct exit).
 	* cppmt::Opts: can choose option (long and short) names for help and version, as well as help strings.
