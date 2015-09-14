@@ -5,7 +5,8 @@ cppt_test_SOURCES = cpptTest.cc \
                     cpptTest-string.cc \
 		    cpptTest-zlib.cc \
 		    cpptTest-encoding.cc \
-		    cpptTest-getopt.cc
+		    cpptTest-getopt.cc \
+		    cpptTest-getenv.cc \
 		    cpptTest-sqlite.cc
 
 cppt_test_CXXFLAGS = $(CPPUNIT_CFLAGS) @PCRECPP_CFLAGS@ @ZLIB_CFLAGS@ -I $(top_srcdir)/src
