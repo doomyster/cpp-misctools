@@ -160,6 +160,7 @@ class Sqlite
 
 	void saveInto(Sqlite& dest);
 	sqlite3* getDB() { return db__; }
+	void enable_extension(bool enable){sqlite3_enable_load_extension(db__,enable); }
 };
 
 } // End of: namespace cppmt
