@@ -1,0 +1,6 @@
+make clean all install check CXXFLAGS="-g -ggdb3 -O0" CXX="g++ -coverage" LDFLAGS="-lgcov"
+cd src/.libs
+gcov -r -o src *.gcno
+lcov -c --directory ../ --output-file coverage.info
+genhtml coverage.info --output-directory ../../coverage.result
+
