@@ -21,6 +21,24 @@
 namespace cppmt
 {
 
+template <typename T>
+struct env_t
+{
+	const char* Name;
+	T Default;
+
+	env_t(const char* n, T def = T());
+};
+
+template <typename T>
+struct env_bounded_t: public env_t<T>
+{
+	T minVal;
+	T maxVal;
+
+	env_bounded_t(const char* n, T minval, T maxval, T def = T());
+};
+
 namespace getEnv
 {
 	class status_t
@@ -33,17 +51,17 @@ namespace getEnv
 		status_t(bool wNull = false, bool hErr = false, bool wOut = false);
 	};
 
-	template <typename T>
-	static T safe(const char* envName, T defaultValue = T());
+	template <typename T> static T safe(const env_t<T>& env);
+	template <typename T> static T safe(const char* envName, T defaultValue = T());
 
-	template <typename T>
-	static status_t check(const char* envName, T* res, T defaultValue = T());
+	template <typename T> static status_t check(const env_t<T>& env, T* res);
+	template <typename T> static status_t check(const char* envName, T* res, T defaultValue = T());
 
-	template <typename T>
-	static T safeBounded(const char* envName, T vmin, T vmax, T defaultValue = T());
+	template <typename T> static T safeBounded(const env_bounded_t<T>& env);
+	template <typename T> static T safeBounded(const char* envName, T vmin, T vmax, T defaultValue = T());
 
-	template <typename T>
-	static status_t checkBounded(const char* envName, T* res, T vmin, T vmax, T defaultValue = T());
+	template <typename T> static status_t checkBounded(const env_bounded_t<T>& env, T* res);
+	template <typename T> static status_t checkBounded(const char* envName, T* res, T vmin, T vmax, T defaultValue = T());
 
 } // End of: namespace getEnv
 

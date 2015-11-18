@@ -26,126 +26,253 @@ void cpptTestGetEnv::testEnv()
 
 	// Tests with environment unset:
 	{
-		// Environment does not exist: using default value to int()
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
-		CPPUNIT_ASSERT(res == 0);
-		CPPUNIT_ASSERT(st.wasNull == true);
+		// Tests with basic API
+		{
+			// Environment does not exist: using default value to int()
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
+			CPPUNIT_ASSERT(res == 0);
+			CPPUNIT_ASSERT(st.wasNull == true);
 
-		// Environment does not exist; using explicit default value
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
-		CPPUNIT_ASSERT(res == 33);
-		CPPUNIT_ASSERT(st.wasNull == true);
+			// Environment does not exist; using explicit default value
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
+			CPPUNIT_ASSERT(res == 33);
+			CPPUNIT_ASSERT(st.wasNull == true);
 
-		// Environment does not exist; using the 'safe' method
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 0);
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == -15);
-
-		
-		// Now the same tests, using a bounded range
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
-		CPPUNIT_ASSERT(st.wasNull == true);
-		CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
-
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
-		CPPUNIT_ASSERT(st.wasNull == true);
-		CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == -15);
 
 
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 0);
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == -10);
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
+			CPPUNIT_ASSERT(st.wasNull == true);
+			CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
+			CPPUNIT_ASSERT(st.wasNull == true);
+			CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == -10);
+		}
+
+		// Tests with improved API
+		{
+			// Environment does not exist: using default value to int()
+			cppmt::env_t<int> env_A("LIBCPPMT_TESTING_1");
+			st = cppmt::getEnv::check(env_A, &res);
+			CPPUNIT_ASSERT(res == 0);
+			CPPUNIT_ASSERT(st.wasNull == true);
+
+			// Environment does not exist; using explicit default value
+			cppmt::env_t<int> env_B("LIBCPPMT_TESTING_1", 33);
+			st = cppmt::getEnv::check(env_B, &res);
+			CPPUNIT_ASSERT(res == 33);
+			CPPUNIT_ASSERT(st.wasNull == true);
+
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1")) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1", -15)) == -15);
+
+
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15), &res);
+			CPPUNIT_ASSERT(st.wasNull == true);
+			CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10), &res);
+			CPPUNIT_ASSERT(st.wasNull == true);
+			CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15)) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10)) == -10);
+		}
 	}
 
 	// Tests with environment set with invalid value
 	{
 		setenv("LIBCPPMT_TESTING_1", "Not_a_Number", 1);
 
-		// Environment does not exist: using default value to int()
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
-		CPPUNIT_ASSERT(res == 0);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == true);
+		// Tests with basic API
+		{
+			// Environment does not exist: using default value to int()
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
+			CPPUNIT_ASSERT(res == 0);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
 
-		// Environment does not exist; using explicit default value
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
-		CPPUNIT_ASSERT(res == 33);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == true);
+			// Environment does not exist; using explicit default value
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
+			CPPUNIT_ASSERT(res == 33);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
 
-		// Environment does not exist; using the 'safe' method
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 0);
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == -15);
-
-		
-		// Now the same tests, using a bounded range
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == true);
-		CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
-
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == true);
-		CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == -15);
 
 
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 0);
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == -10);
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+			CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+			CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == -10);
+		}
+
+		// Tests with improved API
+		{
+			// Environment does not exist: using default value to int()
+			st = cppmt::getEnv::check(cppmt::env_t<int>("LIBCPPMT_TESTING_1"), &res);
+			CPPUNIT_ASSERT(res == 0);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+
+			// Environment does not exist; using explicit default value
+			st = cppmt::getEnv::check(cppmt::env_t<int>("LIBCPPMT_TESTING_1", 33), &res);
+			CPPUNIT_ASSERT(res == 33);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1")) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1", -15)) == -15);
+
+
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+			CPPUNIT_ASSERT(res == 0); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == true);
+			CPPUNIT_ASSERT(res == -10); // Seems unnatural; maybe the defaultValue can be outbounds ?
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15)) == 0);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10)) == -10);
+		}
 	}
 
 	// Tests with environment set with good value
 	{
 		setenv("LIBCPPMT_TESTING_1", "13", 1);
 
-		// Environment does not exist: using default value to int()
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
-		CPPUNIT_ASSERT(res == 13);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
+		// Tests with basic API
+		{
+			// Environment does not exist: using default value to int()
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res);
+			CPPUNIT_ASSERT(res == 13);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
 
-		// Environment does not exist; using explicit default value
-		st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
-		CPPUNIT_ASSERT(res == 13);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
+			// Environment does not exist; using explicit default value
+			st = cppmt::getEnv::check<int>("LIBCPPMT_TESTING_1", &res, 33);
+			CPPUNIT_ASSERT(res == 13);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
 
-		// Environment does not exist; using the 'safe' method
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 13);
-		CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == 13);
-
-		
-		// Now the same tests, using a bounded range
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
-		CPPUNIT_ASSERT(st.wasOutBound == false);
-		CPPUNIT_ASSERT(res == 13);
-
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
-		CPPUNIT_ASSERT(st.wasOutBound == false);
-		CPPUNIT_ASSERT(res == 13);
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1") == 13);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe<int>("LIBCPPMT_TESTING_1", -15) == 13);
 
 
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 13);
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == 13);
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == false);
+			CPPUNIT_ASSERT(res == 13);
 
-		// Now check for outer bounds
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 10, 15, -10);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == false);
+			CPPUNIT_ASSERT(res == 13);
 
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, -10, 10);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
-		CPPUNIT_ASSERT(st.wasOutBound == true);
-		CPPUNIT_ASSERT(res == 10);
 
-		st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 30, 99);
-		CPPUNIT_ASSERT(st.wasNull == false);
-		CPPUNIT_ASSERT(st.hasError == false);
-		CPPUNIT_ASSERT(st.wasOutBound == true);
-		CPPUNIT_ASSERT(res == 30);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15) == 13);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded("LIBCPPMT_TESTING_1", 10, 15, -10) == 13);
 
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded<int>("LIBCPPMT_TESTING_1", 30, 99) == 30);
-		CPPUNIT_ASSERT(cppmt::getEnv::safeBounded<int>("LIBCPPMT_TESTING_1", -30, 10) == 10);
+			// Now check for outer bounds
+
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, -10, 10);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == true);
+			CPPUNIT_ASSERT(res == 10);
+
+			st = cppmt::getEnv::checkBounded<int>("LIBCPPMT_TESTING_1", &res, 30, 99);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == true);
+			CPPUNIT_ASSERT(res == 30);
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded<int>("LIBCPPMT_TESTING_1", 30, 99) == 30);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded<int>("LIBCPPMT_TESTING_1", -30, 10) == 10);
+		}
+
+		// Tests with improved API
+		{
+			// Environment does not exist: using default value to int()
+			st = cppmt::getEnv::check(cppmt::env_t<int>("LIBCPPMT_TESTING_1"), &res);
+			CPPUNIT_ASSERT(res == 13);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+
+			// Environment does not exist; using explicit default value
+			st = cppmt::getEnv::check(cppmt::env_t<int>("LIBCPPMT_TESTING_1", 33), &res);
+			CPPUNIT_ASSERT(res == 13);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+
+			// Environment does not exist; using the 'safe' method
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1")) == 13);
+			CPPUNIT_ASSERT(cppmt::getEnv::safe(cppmt::env_t<int>("LIBCPPMT_TESTING_1", -15)) == 13);
+
+
+			// Now the same tests, using a bounded range
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == false);
+			CPPUNIT_ASSERT(res == 13);
+
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == false);
+			CPPUNIT_ASSERT(res == 13);
+
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15)) == 13);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 10, 15, -10)) == 13);
+
+			// Now check for outer bounds
+
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", -10, 10), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == true);
+			CPPUNIT_ASSERT(res == 10);
+
+			st = cppmt::getEnv::checkBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 30, 99), &res);
+			CPPUNIT_ASSERT(st.wasNull == false);
+			CPPUNIT_ASSERT(st.hasError == false);
+			CPPUNIT_ASSERT(st.wasOutBound == true);
+			CPPUNIT_ASSERT(res == 30);
+
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", 30, 99)) == 30);
+			CPPUNIT_ASSERT(cppmt::getEnv::safeBounded(cppmt::env_bounded_t<int>("LIBCPPMT_TESTING_1", -30, 10)) == 10);
+		}
 	}
 
 
