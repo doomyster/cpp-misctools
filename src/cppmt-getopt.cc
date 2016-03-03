@@ -161,6 +161,11 @@ void Opts::set_help_prefix_message(const string& help_prefix)
 	help_prefix__ = help_prefix;
 }
 
+void Opts::set_help_suffix_message(const string& help_suffix)
+{
+	help_suffix__ = help_suffix;
+}
+
 void Opts::build_struct_option_array(std::vector<struct option>& opts, string& short_opts, int* flag) const
 {
 	int counter = 1;
@@ -465,6 +470,10 @@ void Opts::show_help()
 			(*it)[2] << std::endl;
 
 		++it;
+	}
+
+	if (help_suffix__.empty() == false) {
+		out_stream__ << help_suffix__ << std::endl;
 	}
 }
 

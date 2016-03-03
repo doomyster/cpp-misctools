@@ -60,6 +60,7 @@ class Opts
 	bool autoshow_version__;
 	string version__;
 	string help_prefix__;
+	string help_suffix__;
 	std::ostream& out_stream__;
 	std::ostream& err_stream__;
 	void (*exit_func__)(int);
@@ -92,6 +93,7 @@ class Opts
 	int auto_version(const string& version, const string& long_opt, char short_opt, const string& helpstring="show version and exit");
 
 	void set_help_prefix_message(const string& help_prefix);
+	void set_help_suffix_message(const string& help_suffix);
 
 	int get(int argc, char** argv, int force_optind=1); // Returns optind
 	bool got_errors() const;
