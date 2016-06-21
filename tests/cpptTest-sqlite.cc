@@ -194,7 +194,7 @@ void cpptTestSqlite::testSimpleRequests()
 		CPPUNIT_ASSERT(row.getValue<int>("nId") ==  3 );
 
 		try {
-			const cppmt::Sqlite::row_t& r = res.getCurrentRow();
+			res.getCurrentRow();
 			CPPUNIT_FAIL("res.getCurrentRow() should have thrown an exception."); // Need to call for res.nextRow() before
 		}
 		catch(const std::out_of_range& e) {
@@ -212,7 +212,7 @@ void cpptTestSqlite::testSimpleRequests()
 		}
 
 		try {
-			const cppmt::Sqlite::row_t& r = res.getRow(1);
+			res.getRow(1);
 			CPPUNIT_FAIL("res.getRow(1) should have thrown an exception."); // Need to call for res.nextRow() before
 		}
 		catch(const std::out_of_range& e) {
