@@ -1,5 +1,5 @@
-file (GLOB sources cppmt-encoding.cc cppmt-env.cc cppmt-getopt.cc cppmt-sqlite-cell_t.cc cppmt-sqlite-main.cc cppmt-sqlite-result_t.cc cppmt-sqlite-row_t.cc cppmt-string.cc cppmt-zlib.cc)
-file (GLOB headers cppmt-encoding.h  cppmt-env.h  cppmt-env.hxx  cppmt-exceptions.h  cppmt-getopt.h  cppmt-getopt.hxx  cppmt-sqlite.h  cppmt-sqlite.hxx  cppmt-string.h  cppmt-zlib.h  cppmt-zlib.hxx)
+file (GLOB sources cppmt-encoding.cc cppmt-env.cc cppmt-getopt.cc cppmt-sqlite-cell_t.cc cppmt-sqlite-main.cc cppmt-sqlite-result_t.cc cppmt-sqlite-row_t.cc cppmt-string.cc cppmt-zlib.cc cppmt-endianness.cc)
+file (GLOB headers cppmt-encoding.h  cppmt-env.h  cppmt-env.hxx  cppmt-exceptions.h  cppmt-getopt.h  cppmt-getopt.hxx  cppmt-sqlite.h  cppmt-sqlite.hxx  cppmt-string.h  cppmt-zlib.h  cppmt-zlib.hxx cppmt-endianness.h)
 
 add_library (cpp-misctools SHARED ${sources})
 

@@ -1,4 +1,4 @@
-file (GLOB sources cpptTest.cc cpptTest-string.cc cpptTest-zlib.cc cpptTest-encoding.cc cpptTest-getopt.cc cpptTest-getenv.cc cpptTest-sqlite.cc)
+file (GLOB sources cpptTest.cc cpptTest-string.cc cpptTest-zlib.cc cpptTest-encoding.cc cpptTest-getopt.cc cpptTest-getenv.cc cpptTest-sqlite.cc cpptTest-endianness.cc)
 
 add_executable(cppmt-test ${sources})
 
