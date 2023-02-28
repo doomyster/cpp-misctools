@@ -4,6 +4,7 @@ check_PROGRAMS = $(TESTS)
 cppt_test_SOURCES = cpptTest.cc \
                     cpptTest-string.cc \
 		    cpptTest-zlib.cc \
+		    cpptTest-endianness.cc \
 		    cpptTest-encoding.cc \
 		    cpptTest-getopt.cc \
 		    cpptTest-getenv.cc \
